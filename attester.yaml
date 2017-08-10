@@ -28,7 +28,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: attester
-              key: attester_appname.txt
+              key: attester_appnoame.txt
         - name: ATTESTER_PRK
           valueFrom:
             secretKeyRef:

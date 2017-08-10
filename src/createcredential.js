@@ -7,6 +7,11 @@ var app = express();
 app.use(express.static('public'))
 app.use(express.static('node_modules'))
 
+if (!process.env.COFUNDME_APPNAME || !process.env.COFUNDME_PRK|| !process.env.COFUNDME_ADDRESS) {
+  console.log('Error: Specify COFUNDME_APPNAME, COFUNDME_PRK and COFUNDME_ADDRESS in environment')
+  process.exit(1)
+}
+
 
 var signer = uport.SimpleSigner('bc41ddd213a04a2d45ce689bc9bf07bc8c37006ede9e98ac7fd1284d2b889826')
 

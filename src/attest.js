@@ -8,8 +8,18 @@ app.use(express.static('public'))
 app.use(express.static('node_modules'))
 
 
-var signerSwissBank = uport.SimpleSigner('639931d7afcd987ec68db25255c84120150cbfd3c818e59f16fa446b425c0f2b')
 
+if (!process.env.ATTESTER_APPNAME || !process.env.ATTESTER_PRK|| !process.env.ATTESTER_ADDRESS) {
+  console.log('Error: Specify ATTESTER_APPNAME, ATTESTER_PRK and ATTESTER_ADDRESS in environment')
+  process.exit(1)
+}
+
+
+var signerSwissBank = uport.SimpleSigner(process.env.ATTESTER_PRK)
+
+function log(msg){
+	console.log(msg)
+}
 
 app.get('/', function (req, res) {
     res.send("use overview.html")
@@ -17,8 +27,8 @@ app.get('/', function (req, res) {
 
 
 var credentials = new uport.Credentials({
-  appName: 'Bank Switzerland',
-  address: '2oqTZr4TSu3gc6F9KtNs6A2EsY1zk8Lzefp',
+  appName: process.env.ATTESTER_APPNAME,
+  address: process.env.ATTESTER_ADDRESS,
   signer: signerSwissBank
   //networks: {'0x4': {'registry' : '0x2cc31912b2b0f3075a87b3640923d45a26cef3ee', 'rpcUrl' : 'https://rinkeby.infura.io'}}
   // Note: we use Rinkeby by default, the above is the explicit format for selecting a network
@@ -27,9 +37,10 @@ var credentials = new uport.Credentials({
 
 
 app.get('/readData', function (req, res) {
+	// callback urls: localhost
     credentials.createRequest({
     requested: ['name','phone','identity_no'],
-    callbackUrl: 'https://localhost:8081/readDataCallback?random=345' // URL to send the response of the request to
+    callbackUrl: 'https://8081-dot-2980640-dot-devshell.appspot.com/readDataCallback?random=345' // URL to send the response of the request to
   }).then(requestToken => {
     // send requestToken to browser
     //taken from demo.uport.me
@@ -64,7 +75,7 @@ app.get('/attest', function (req, res) {
 
 
 var server = app.listen(8081, function () {
-  console.log("Tutorial app running...")
+  console.log("Tutorial app running... 8081")
 })
 
 
